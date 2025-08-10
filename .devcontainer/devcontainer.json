@@ -13,13 +13,9 @@
       "systemImageVersion": "google_apis;x86_64"
     }
   },
-  // ★ CHANGE: 環境構築完了後に実行するコマンドを強化
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y unzip libglu1-mesa && git clone https://github.com/flutter/flutter.git -b stable /usr/local/flutter && echo 'no' | /opt/android-sdk/cmdline-tools/latest/bin/avdmanager create avd -n default -k 'system-images;android-34;google_apis;x86_64'",
+  // ★ CHANGE: 環境構築完了後に実行するコマンドを強化し、すべての設定を自動化
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y unzip libglu1-mesa && git clone https://github.com/flutter/flutter.git -b stable /usr/local/flutter && echo 'export PATH=\"$PATH:/usr/local/flutter/bin:/opt/android-sdk/emulator:/opt/android-sdk/platform-tools\"' >> ~/.bashrc && echo 'no' | /opt/android-sdk/cmdline-tools/latest/bin/avdmanager create avd -n default -k 'system-images;android-34;google_apis;x86_64'",
 
-  // ★ ADD: 環境変数を確実に設定
-  "remoteEnv": {
-    "PATH": "${containerEnv:PATH}:/usr/local/flutter/bin:/opt/android-sdk/emulator:/opt/android-sdk/platform-tools"
-  },
   "remoteUser": "vscode",
   "customizations": {
     "vscode": {
