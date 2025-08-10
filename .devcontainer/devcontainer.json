@@ -1,0 +1,30 @@
+{
+  "name": "BitChat Flutter Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17"
+    },
+    "ghcr.io/devcontainers/features/android-sdk:0": {
+      "version": "10406996",
+      "buildToolsVersion": "34.0.0",
+      "platformVersion": "34"
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y unzip libglu1-mesa && git clone https://github.com/flutter/flutter.git -b stable /usr/local/flutter && echo 'export PATH=\"$PATH:/usr/local/flutter/bin\"' >> ~/.bashrc",
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Dart-Code.flutter",
+        "Dart-Code.dart-code"
+      ]
+    }
+  },
+  "forwardPorts": [
+    6080
+  ],
+  "runArgs": [
+    "--privileged"
+  ]
+}
