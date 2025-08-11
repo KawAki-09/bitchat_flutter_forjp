@@ -1,8 +1,6 @@
-// ファイルパス: lib/services/mesh_service.dart
-// ★ flutter_blue_plus v1.32.4 に完全対応した最終版コードです
-
 import 'dart:async';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BluetoothConstants {
@@ -14,6 +12,7 @@ final meshServiceProvider = Provider((ref) => MeshService(ref));
 
 class MeshService {
   final Ref _ref;
+  final FlutterBlePeripheral _peripheral = FlutterBlePeripheral();
   bool _isInitialized = false;
   StreamSubscription? _scanSubscription;
 
@@ -21,8 +20,9 @@ class MeshService {
     _initialize();
   }
 
-  void _initialize() {
+  void _initialize() async {
     if (_isInitialized) return;
+    await _peripheral.isSupported; // 初期化
     _isInitialized = true;
     print("MeshService initialized.");
   }
@@ -38,28 +38,25 @@ class MeshService {
   Future<void> stop() async {
     print("MeshService stopping...");
     await FlutterBluePlus.stopScan();
-    await FlutterBluePlus.stopAdvertising();
+    if (await _peripheral.isAdvertising) {
+      await _peripheral.stop();
+    }
     _scanSubscription?.cancel();
     print("MeshService stopped.");
   }
 
   Future<void> _startAdvertising() async {
-    try {
-      var advertiseData = AdvertiseData(
-        serviceUuids: [BluetoothConstants.serviceUuid.toString()],
-        localName: "BitChat User",
-        includeDeviceName: true,
-        includeTxPowerLevel: true,
-      );
+    if (await _peripheral.isAdvertising) {
+      await _peripheral.stop();
+    }
 
-      await FlutterBluePlus.startAdvertising(
-        advertiseData,
-        advertiseSettings: AdvertiseSettings(
-          advertiseMode: AdvertiseMode.lowLatency,
-          txPowerLevel: AdvertiseTxPower.high,
-          connectable: true,
-        ),
-      );
+    final advertiseData = AdvertiseData(
+      serviceUuid: BluetoothConstants.serviceUuid.toString(),
+      localName: "BitChat User",
+    );
+
+    try {
+      await _peripheral.start(advertiseData: advertiseData);
       print("Advertising started successfully.");
     } catch (e) {
       print("Error starting advertising: $e");
