@@ -26,6 +26,12 @@ dependencies:
 
   permission_handler: ^11.3.1
 
+  # ★ ADD: Multipeer/Nearby Connections のために追加
+  flutter_nearby_connections: ^1.1.2
+
+  # ★ ADD: デバイスのユニークID生成のために追加
+  uuid: ^4.5.1
+
 
 dev_dependencies:
   flutter_test:
