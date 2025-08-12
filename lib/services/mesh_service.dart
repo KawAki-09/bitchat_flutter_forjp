@@ -4,7 +4,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_ble_peripheral/flutter_ble_peripheral.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'device_identity_service.dart';
-import 'hybrid_connectivity_service.dart'; // ★ ADD
+import 'hybrid_connectivity_service.dart';
 
 class BluetoothConstants {
   static final Guid serviceUuid = Guid("F47B5E2D-4A9E-4C5A-9B3F-8E1D2C3A4B5C");
@@ -20,7 +20,7 @@ class MeshService {
   final Ref _ref;
   final FlutterBlePeripheral _blePeripheral = FlutterBlePeripheral();
   final DeviceIdentityService _deviceIdentity = DeviceIdentityService();
-  final HybridConnectivityService _hybridService = HybridConnectivityService(); // ★ ADD
+  final HybridConnectivityService _hybridService = HybridConnectivityService();
 
   StreamSubscription? _bleScanSubscription;
   String? _deviceUuid;
@@ -35,7 +35,7 @@ class MeshService {
   void _initialize() async {
     _deviceUuid = await _deviceIdentity.getDeviceUuid();
     print("MeshService initialized with UUID: $_deviceUuid");
-
+    
     // Initialize the hybrid service, passing the BLE connection callback
     await _hybridService.init(
       onBleConnectRequest: initiateBleConnectionByUuid,
@@ -45,7 +45,7 @@ class MeshService {
   Future<void> start() async {
     print("MeshService starting all services...");
     await FlutterBluePlus.adapterState.where((s) => s == BluetoothAdapterState.on).first;
-
+    
     // Advertising and browsing/scanning are now started from within the services' init methods
     // We just need to ensure they are initialized.
     await startBleAdvertising();
@@ -80,7 +80,7 @@ class MeshService {
       print("Error starting BLE advertising: $e");
     }
   }
-
+  
   Future<void> stopBleAdvertising() async {
       if (await _blePeripheral.isAdvertising) {
           await _blePeripheral.stop();
